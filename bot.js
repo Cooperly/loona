@@ -37,25 +37,57 @@
                         s4d.client.emit(packet.t, guild, channel, message, member, packet.d.emoji.name);
                     }
                 });
-                s4d.client.login('ODIzMTQ0MjU5ODQyMzQyOTEy.YFci1A.U0d-ipGDlOSPaoMxWlS4k7vne7k').catch((e) => { s4d.tokenInvalid = true; s4d.tokenError = e; });
+                var member_xp, member_level;
+
 
 s4d.client.on('message', async (s4dmessage) => {
-  if ((s4dmessage.content) == '!slavery') {
-    s4dmessage.channel.send(String('yes slavery'));
-    s4dmessage.react('👍');}
+  if ((s4dmessage.content) == 'l:adminonlypsst') {
+    s4d.client.user.setActivity(String('l:help - If you need help.'));
+  }
 
 });
 
+s4d.client.login('ODIzMTQ0MjU5ODQyMzQyOTEy.YFci1A.U0d-ipGDlOSPaoMxWlS4k7vne7k').catch((e) => { s4d.tokenInvalid = true; s4d.tokenError = e; });
+
 s4d.client.on('message', async (s4dmessage) => {
-  if ((s4dmessage.content) == '!ping') {
-    s4dmessage.channel.send(String('pong!'));
+  if ((s4dmessage.content) == 'l:help') {
+    s4dmessage.channel.send(String('In the loona 0.25 Build are a few commands:'));
+    s4dmessage.channel.send(String('l:help - shows commands lol'));
+    s4dmessage.channel.send(String('l:level - shows what level you are'));
+    s4dmessage.channel.send(String('l:xp - tells you how much xp ya need to advance to the next level.'));
+    s4dmessage.channel.send(String('loona you workin? - i reply with yes im working, if that doesnt happen. it might be that my hosting platform is a bitch. or the bot crashed lol.'));
   }
 
 });
 
 s4d.client.on('message', async (s4dmessage) => {
-  if ((s4dmessage.content) == '!ping') {
-    s4dmessage.channel.send(String('pong!'));
+  if (!((s4dmessage.member).user.bot)) {
+    member_xp = s4d.database.get(String(('xp-' + String(s4dmessage.author.id))));
+    member_level = s4d.database.get(String(('level-' + String(s4dmessage.author.id))));
+    if (!member_xp) {
+      member_xp = 0;
+    } else if (!member_level) {
+      member_level = 0;
+    }
+    s4d.database.set(String(('xp-' + String(s4dmessage.author.id))), (member_xp + 1));
+    member_xp = member_xp + 1;
+    if (member_xp > 100) {
+      s4d.database.set(String(('level-' + String(s4dmessage.author.id))), (member_level + 1));
+      member_level = member_level + 1;
+      s4dmessage.channel.send(String((['Congratulations, ',s4dmessage.member,'you jumped to level ',member_level,'!!'].join(''))));
+    }
+    if ((s4dmessage.content) == 'l:level') {
+      s4dmessage.channel.send(String(([s4dmessage.member,', you are currently level: ',member_level].join(''))));
+    } else if ((s4dmessage.content) == 'l:xp') {
+      s4dmessage.channel.send(String(([s4dmessage.member,', you need ',100 - member_xp,' to jump to level ',member_level + 1].join(''))));
+    }
+  }
+
+});
+
+s4d.client.on('message', async (s4dmessage) => {
+  if ((s4dmessage.content) == 'loona you workin?') {
+    s4dmessage.channel.send(String('yes im working.'));
   }
 
 });
